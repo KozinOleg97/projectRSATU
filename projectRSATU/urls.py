@@ -15,6 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, re_path
+#from django.contrib.auth import views as auth_views
+from django.views.generic import TemplateView
 
 from RSATU1 import views
 
@@ -26,6 +28,12 @@ urlpatterns = [
     path('contact', views.contact),
     path('blog', views.PostListView.as_view(), name='blog'),
     re_path(r'blog/post/(?P<pid>\d+)', views.post),
-    re_path(r'tag/(?P<tagid>\d+)', views.tags) # неверно тут
+    re_path(r'tag/(?P<curTag>\w+)', views.tags),
 
+   # re_path(r'^login/$', auth_views.login, name='login'),
+   # re_path(r'^logout/$', auth_views.logout, name='logout'),
+   # re_path(r'^admin/', admin.site.urls)
+
+    re_path(r'^login/$', views.user_login, name='login'),
+    re_path(r'^register/$', views.register, name='register'),
 ]
