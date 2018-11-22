@@ -14,14 +14,14 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, re_path
-#from django.contrib.auth import views as auth_views
+from django.urls import path, re_path, include
+# from django.contrib.auth import views as auth_views
 from django.views.generic import TemplateView
 
 from RSATU1 import views
 
 urlpatterns = [
-    path('', views.index, name='home'),
+    # path('', views.index, name='home'),
     path('admin/', admin.site.urls),
 
     path('about', views.about),
@@ -30,10 +30,14 @@ urlpatterns = [
     re_path(r'blog/post/(?P<pid>\d+)', views.post),
     re_path(r'tag/(?P<curTag>\w+)', views.tags),
 
-   # re_path(r'^login/$', auth_views.login, name='login'),
-   # re_path(r'^logout/$', auth_views.logout, name='logout'),
-   # re_path(r'^admin/', admin.site.urls)
+    # re_path(r'^login/$', auth_views.login, name='login'),
+    # re_path(r'^logout/$', auth_views.logout, name='logout'),
+    # re_path(r'^admin/', admin.site.urls)
 
-    re_path(r'^login/$', views.user_login, name='login'),
-    re_path(r'^register/$', views.register, name='register'),
+    re_path(r'^accounts/login/$', views.user_login, name='login'),
+    re_path(r'^accounts/register/$', views.register, name='register'),
+
+    path('', TemplateView.as_view(template_name='home.html'), name='home'),
+
+    path('accounts/', include('django.contrib.auth.urls')),
 ]
