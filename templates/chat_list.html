@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Chat List</h1>
+
+    {% if list_of_chats %}
+        <ul>
+
+            {% for chat in list_of_chats %}
+                <li>
+                    <a href="{{ chat.id }}">
+                        {{ chat.title }}
+                    </a>
+                </li>
+            {% endfor %}
+
+        </ul>
+    {% else %}
+        <p>You don't have active chats.</p>
+    {% endif %}
+{% endblock %}

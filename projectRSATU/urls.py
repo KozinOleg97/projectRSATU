@@ -40,4 +40,8 @@ urlpatterns = [
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
 
     path('accounts/', include('django.contrib.auth.urls')),
+
+    re_path(r'^chats/$', views.get_chat_list, name='chat_list'),
+    re_path(r'^chats/create/(?P<user_id>\d+)/$', views.create_dialog, name='create_dialog'),
+    re_path(r'^chats/(?P<chat_id>\d+)/$', views.MessagesView.as_view(), name='messages'),
 ]

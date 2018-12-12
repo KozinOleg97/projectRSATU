@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>{{ chat.title }}</h1>
+
+    {% if message_list %}
+        <ul>
+            {% for mess in message_list %}
+                <li>
+                        {{ mess.author }} -- {{ mess.text }}
+
+                </li>
+            {% endfor %}
+
+        </ul>
+    {% else %}
+        <p>Empty.</p>
+    {% endif %}
+{% endblock %}

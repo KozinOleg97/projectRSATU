@@ -7,6 +7,21 @@ from django.utils.datetime_safe import datetime
 from django.views.generic.edit import FormView
 from django.contrib.auth.forms import UserCreationForm
 
+from django.contrib.auth.models import User
+
+
+class Chat(models.Model):
+    title = models.CharField(max_length=100)
+    type = models.CharField(max_length=10, default='chat')
+    members = models.ManyToManyField(User)
+
+
+class Message(models.Model):
+    chat = models.ForeignKey(Chat, on_delete=models.DO_NOTHING)
+    author = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    text = models.TextField()
+    timeAndDate = models.DateTimeField()
+    is_readed = models.BooleanField(default=False)
 
 
 class Tag(models.Model):
@@ -19,7 +34,6 @@ class Post(models.Model):
     date = models.DateField(default='')
     text = models.TextField(default='')
     tag = models.ManyToManyField(Tag)
-
 
 
 class RegisterFormView(FormView):

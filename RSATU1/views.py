@@ -2,11 +2,12 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.http import HttpResponse
-from django.views import generic
+from django.views import generic, View
 
-from RSATU1.models import Post, Tag
+from RSATU1.models import Post, Tag, Chat, Message
 from .forms import LoginForm, UserRegistrationForm
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
 
 
 def index(request):
@@ -80,3 +81,49 @@ def user_login(request):
     else:
         form = LoginForm()
     return render(request, 'login.html', {'form': form})
+
+
+def get_chat_list(request):
+    if request.user.is_authenticated:
+        list_of_chats = Chat.objects.filter(members__in=[request.user.id])
+        return render(request, 'chat_list.html', {'list_of_chats': list_of_chats})
+    else:
+        list_of_chats = Chat.objects.filter(type='public')
+        return render(request, 'chat_list.html', {'list_of_chats': list_of_chats})
+
+
+def create_dialog(request):
+    return None
+
+
+def get_chat(request):
+    # list_of_messages =
+    return None
+
+
+class MessagesView(View):
+    def get(self, request, chat_id):
+        try:
+            chat = Chat.objects.get(id=chat_id)
+            if request.user in chat.members.all():
+                message_list = chat.message_set.filter(is_readed=False).exclude(author=request.user).update(
+                    is_readed=True)
+
+                message_list = chat.message_set
+            else:
+                chat = None
+        except Chat.DoesNotExist:
+            chat = None
+
+        message_list = Message.objects.filter(chat=chat_id)
+        return render(request, 'chat.html', {'user': request.user, 'chat': chat, "message_list": message_list})
+
+    def post(self, request, chat_id):
+        return None
+    # form = MessageForm(data=request.POST)
+    # if form.is_valid():
+    #     message = form.save(commit=False)
+    #     message.chat_id = chat_id
+    #     message.author = request.user
+    #     message.save()
+    # return redirect(reverse('users:messages', kwargs={'chat_id': chat_id}))
