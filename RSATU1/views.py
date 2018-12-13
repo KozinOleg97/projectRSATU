@@ -105,6 +105,7 @@ class MessagesView(View):
     def get(self, request, chat_id):
         try:
             chat = Chat.objects.get(id=chat_id)
+
             if request.user in chat.members.all():
                 message_list = chat.message_set.filter(is_readed=False).exclude(author=request.user).update(
                     is_readed=True)
@@ -116,9 +117,11 @@ class MessagesView(View):
             chat = None
 
         message_list = Message.objects.filter(chat=chat_id)
-        return render(request, 'chat.html', {'user': request.user, 'chat': chat, "message_list": message_list})
+        return render(request, 'chat.html', {'user_id': request.user.id, 'user_name': request.user, 'chat': chat,
+                                             "message_list": message_list})
 
-    def post(self, request, chat_id):
+    def post(self, request):
+        print("qwe");
         return None
     # form = MessageForm(data=request.POST)
     # if form.is_valid():

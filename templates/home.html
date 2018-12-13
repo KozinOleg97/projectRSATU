@@ -8,6 +8,7 @@
         Hi {{ user.username }}!
         <p><a href="{% url 'logout' %}">logout</a></p>
         <a href="{% url 'blog' %}">blog</a>
+        <a href="{% url 'chat_list' %}">chats</a>
     {% else %}
         <p>You are not logged in</p>
         <p><a href="{% url 'login' %}">login</a></p>
