@@ -16,7 +16,7 @@
     <h1>{{ chat.title }}</h1>
 
     {% if message_list %}
-        <ul>
+        <ul id="visible_message_list">
             {% for mess in message_list %}
                 <li>
                     {{ mess.author }} -- {{ mess.text }}
@@ -32,7 +32,7 @@
     <div>
         <p>
             <label for="comment">Message:</label><br/>
-            <textarea name="message_text" placeholder="Не более 200 символов" maxlength="200"></textarea>
+            <textarea name="message_text" id="message_text" placeholder="Не более 200 символов" maxlength="200"></textarea>
         </p>
         <p>
             <input type="submit" onclick="sendMessage()" value="Добавить"/>

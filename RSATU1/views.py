@@ -1,14 +1,18 @@
+from datetime import datetime
+
 from django.shortcuts import render
 
 # Create your views here.
 from django.http import HttpResponse
+from django.utils.decorators import method_decorator
 from django.views import generic, View
+from django.views.decorators.csrf import csrf_exempt
 
 from RSATU1.models import Post, Tag, Chat, Message
 from .forms import LoginForm, UserRegistrationForm
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
-
+import json
 
 def index(request):
     # return HttpResponse("<h2>Главная</h2>")
@@ -102,6 +106,10 @@ def get_chat(request):
 
 
 class MessagesView(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super(MessagesView, self).dispatch(request, *args, **kwargs)
+
     def get(self, request, chat_id):
         try:
             chat = Chat.objects.get(id=chat_id)
@@ -120,9 +128,31 @@ class MessagesView(View):
         return render(request, 'chat.html', {'user_id': request.user.id, 'user_name': request.user, 'chat': chat,
                                              "message_list": message_list})
 
-    def post(self, request):
-        print("qwe");
-        return None
+    def post(self, request, chat_id):
+        data = request.POST
+        text = data.get("text")
+        chat_id = int(data.get("chat"))
+        author = int(data.get("author"))
+        time_date = datetime.now()
+
+        #new_mess = user_form.save(commit=False)
+
+        new_mess = Message()
+        new_mess.author_id = author
+        new_mess.chat_id = chat_id
+        new_mess.text = text
+        new_mess.timeAndDate = time_date
+        new_mess.is_readed = True
+        q = new_mess.check()
+
+        new_mess.save()
+
+        message_list = Message.objects.filter(chat=chat_id)
+
+        return HttpResponse(json.dumps({
+            'author': new_mess.author.username,
+            'text': new_mess.text
+        }), content_type='application/json')
     # form = MessageForm(data=request.POST)
     # if form.is_valid():
     #     message = form.save(commit=False)
